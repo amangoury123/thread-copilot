@@ -1,6 +1,12 @@
 # Progress
 
 ## Done
+- **2026-09-26 — New pricing: 3 tiers, yearly billing, founding member offer**
+  - `src/lib/plans.ts` is the single source of truth: Free (5/mo), Pro ($12 / ₹799, $9 / ₹599 yearly, 150/mo), Creator ($29 / ₹1,999, $24 / ₹1,599 yearly, 400/mo + Premium AI mode), founding member offer (Pro at $7 / ₹499, first 100 users), comparison rows, price helpers.
+  - Every plan includes every feature; plans differ only by volume. No feature gating in the UI.
+  - `/pricing`: Monthly/Yearly toggle ("Save up to 25%"), USD/INR toggle (default USD), founding member banner, 3 cards (Pro highlighted), per-card yearly savings, guarantee line, value line, comparison table (horizontal scroll on mobile), pricing FAQ.
+  - Landing page reuses the same `PricingCards` component.
+  - Mock usage limits now come from `plans.ts` and apply to every plan; Upgrade dialog shows the plans above the current one; Settings and the usage meter show the correct plan name and limit.
 - **2026-09-26 — Frontend UI with mock data layer**
   - App shell: theme provider (light/dark/system via `next-themes`), `<Toaster />`, `<TooltipProvider />`, violet accent theme.
   - Shared types in `src/types` (Tweet, Thread, GenerateOptions, OptimizeResult, Usage).
@@ -24,5 +30,7 @@
 - Claude API in `src/lib/ai`: Sonnet for generate/optimize, Haiku for single-tweet regenerate. Short prompts.
 - Server-side usage limit enforcement + monthly reset.
 - Real profile data (name, handle, avatar) in previews and Settings.
-- Razorpay checkout for Pro; replace upgrade toasts.
+- Razorpay checkout for Pro and Creator (monthly + yearly, USD + INR); replace upgrade toasts.
+- Founding member offer: real spot counter (currently a static constant of 100) and locked-in pricing.
+- Premium AI mode for Creator (higher-quality model in `src/lib/ai`).
 - Remove demo-only pieces: "Reset demo data" in Settings, `resetDemoData()`, localStorage storage.

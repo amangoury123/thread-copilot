@@ -1,6 +1,7 @@
 "use client";
 
 import { CrownIcon } from "lucide-react";
+import { PLANS, plansAbove } from "@/lib/plans";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
@@ -19,17 +20,10 @@ export function UsageMeter({ className }: { className?: string }) {
     );
   }
 
-  if (usage.plan === "pro") {
-    return (
-      <div className={cn("flex items-center gap-2 rounded-lg border bg-background p-3 text-sm", className)}>
-        <CrownIcon className="size-4 text-primary" />
-        Pro plan · Unlimited threads
-      </div>
-    );
-  }
-
+  const plan = PLANS[usage.plan];
   const percent = Math.min(100, (usage.used / usage.limit) * 100);
   const atLimit = usage.used >= usage.limit;
+  const canUpgrade = plansAbove(usage.plan).length > 0;
 
   return (
     <div className={cn("space-y-2.5 rounded-lg border bg-background p-3", className)}>
@@ -37,7 +31,9 @@ export function UsageMeter({ className }: { className?: string }) {
         <span className="font-medium tabular-nums">
           {usage.used} / {usage.limit}
         </span>{" "}
-        <span className="text-muted-foreground">free threads used</span>
+        <span className="text-muted-foreground">
+          {usage.plan === "free" ? "free threads used" : `${plan.name} threads used`}
+        </span>
       </p>
       <div
         className="h-1.5 overflow-hidden rounded-full bg-muted"
@@ -52,10 +48,14 @@ export function UsageMeter({ className }: { className?: string }) {
           style={{ width: `${percent}%` }}
         />
       </div>
-      <Button size="sm" className="w-full" onClick={openUpgrade}>
-        <CrownIcon />
-        Upgrade
-      </Button>
+      {canUpgrade ? (
+        <Button size="sm" className="w-full" onClick={openUpgrade}>
+          <CrownIcon />
+          Upgrade
+        </Button>
+      ) : (
+        <p className="text-xs text-muted-foreground">Resets on the 1st of each month.</p>
+      )}
     </div>
   );
 }

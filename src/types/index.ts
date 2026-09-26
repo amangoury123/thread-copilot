@@ -4,7 +4,7 @@ export type ThreadLength = 5 | 7 | 10;
 
 export type ThreadSource = "generated" | "optimized";
 
-export type Plan = "free" | "pro";
+export type Plan = "free" | "pro" | "creator";
 
 export interface Tweet {
   id: string;

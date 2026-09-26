@@ -37,8 +37,9 @@ export const GENERAL_FAQ: FaqItem[] = [
       "Each Generate or Optimize run counts as one thread. Editing, regenerating single tweets, copying, and saving drafts are free.",
   },
   {
-    question: "Can I cancel Pro anytime?",
-    answer: "Yes. Pro is billed monthly and you can cancel whenever you like. You keep Pro until the end of your billing period.",
+    question: "Can I cancel anytime?",
+    answer:
+      "Yes. Paid plans are billed monthly or yearly and you can cancel whenever you like. You keep your plan until the end of the billing period.",
   },
 ];
 

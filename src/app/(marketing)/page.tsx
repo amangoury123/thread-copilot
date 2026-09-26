@@ -12,8 +12,9 @@ import {
 } from "lucide-react";
 import { DemoThread } from "@/components/marketing/demo-thread";
 import { Faq } from "@/components/marketing/faq";
-import { PricingCards } from "@/components/marketing/pricing-cards";
+import { PricingCards } from "@/components/marketing/pricing/pricing-cards";
 import { buttonVariants } from "@/components/ui/button";
+import { PLANS } from "@/lib/plans";
 
 const STEPS = [
   {
@@ -96,7 +97,9 @@ export default function LandingPage() {
               See how it works
             </Link>
           </div>
-          <p className="mt-4 text-xs text-muted-foreground">5 free threads every month · No credit card</p>
+          <p className="mt-4 text-xs text-muted-foreground">
+            {PLANS.free.threadsPerMonth} free threads every month · No credit card
+          </p>
         </div>
         <div className="mx-auto max-w-6xl px-4 pb-20 sm:px-6">
           <DemoThread />
@@ -146,7 +149,11 @@ export default function LandingPage() {
       {/* Pricing preview */}
       <section id="pricing" className="scroll-mt-20 border-t bg-muted/30">
         <div className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
-          <SectionHeading eyebrow="Pricing" title="Start free. Upgrade when you're hooked." />
+          <SectionHeading
+            eyebrow="Pricing"
+            title="Start free. Upgrade when you're hooked."
+            description="Every plan includes every feature. Plans differ only by how many threads you write."
+          />
           <div className="mt-12">
             <PricingCards />
           </div>

@@ -2,6 +2,7 @@
 
 import { useState, useSyncExternalStore, type FormEvent } from "react";
 import { Loader2Icon, MonitorIcon, MoonIcon, RotateCcwIcon, SunIcon } from "lucide-react";
+import Link from "next/link";
 import { useTheme } from "next-themes";
 import { toast } from "sonner";
 import { resetDemoData } from "@/lib/api/threads";
@@ -94,27 +95,35 @@ function ProfileSection() {
 
 function PlanSection() {
   const { usage } = useUsage();
+  const plan = usage ? PLANS[usage.plan] : null;
 
   return (
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           Plan
-          {usage ? (
-            <Badge variant={usage.plan === "pro" ? "default" : "secondary"}>
-              {PLANS[usage.plan].name}
-            </Badge>
+          {plan ? (
+            <Badge variant={plan.id === "free" ? "secondary" : "default"}>{plan.name}</Badge>
           ) : (
             <Skeleton className="h-5 w-12 rounded-full" />
           )}
         </CardTitle>
         <CardDescription>
-          Free includes 5 threads per month. Pro is unlimited for {PLANS.pro.price}
-          {PLANS.pro.period}.
+          {plan ? (
+            <>
+              {plan.name} includes {plan.threadsPerMonth} threads per month. Every plan includes
+              every feature.
+            </>
+          ) : (
+            <Skeleton className="h-4 w-64" />
+          )}
         </CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="space-y-3">
         <UsageMeter className="bg-muted/30" />
+        <Link href="/pricing" className="inline-block text-sm font-medium text-primary hover:underline">
+          Compare plans →
+        </Link>
       </CardContent>
     </Card>
   );

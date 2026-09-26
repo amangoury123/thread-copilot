@@ -1,11 +1,13 @@
 import type {
   GenerateOptions,
   OptimizeResult,
+  Plan,
   Thread,
   Tweet,
   Usage,
 } from "@/types";
 import { UsageLimitError } from "@/lib/errors";
+import { PLANS } from "@/lib/plans";
 import { createId, deriveTitle } from "@/lib/thread-utils";
 import { getTweetLength } from "@/lib/twitter";
 import { REGEN_POOL, SEED_DRAFTS, TEMPLATES } from "./data";
@@ -13,7 +15,6 @@ import { readJSON, removeKey, writeJSON } from "./storage";
 
 const DRAFTS_KEY = "drafts";
 const USAGE_KEY = "usage";
-const FREE_LIMIT = 5;
 const SEED_USED = 3;
 
 const CTA_PATTERN = /\b(follow|repost|retweet|bookmark|reply|subscribe|dm me)\b/i;
@@ -71,7 +72,9 @@ function registerTweets(tweets: Tweet[], topic: string): void {
 
 // ---------- usage ----------
 
-interface StoredUsage extends Usage {
+interface StoredUsage {
+  used: number;
+  plan: Plan;
   period: string;
 }
 
@@ -83,7 +86,6 @@ function currentPeriod(): string {
 function loadUsage(): StoredUsage {
   const stored = readJSON<StoredUsage>(USAGE_KEY, {
     used: SEED_USED,
-    limit: FREE_LIMIT,
     plan: "free",
     period: currentPeriod(),
   });
@@ -93,14 +95,16 @@ function loadUsage(): StoredUsage {
     : { ...stored, used: 0, period: currentPeriod() };
 }
 
-function publicUsage({ used, limit, plan }: StoredUsage): Usage {
-  return { used, limit, plan };
+/** The limit always comes from plans.ts, never from storage. */
+function publicUsage({ used, plan }: StoredUsage): Usage {
+  return { used, limit: PLANS[plan].threadsPerMonth, plan };
 }
 
+/** Every plan has a monthly limit (Pro/Creator are fair-use limits). */
 function assertCanUse(): void {
-  const usage = loadUsage();
-  if (usage.plan === "free" && usage.used >= usage.limit) {
-    throw new UsageLimitError(publicUsage(usage));
+  const usage = publicUsage(loadUsage());
+  if (usage.used >= usage.limit) {
+    throw new UsageLimitError(usage);
   }
 }
 
